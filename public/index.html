@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peroxile - My Blog</title>
+    <link rel="stylesheet" href="../src/styles/main.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Peroxile</div>
+        <div class="header-controls">
+            <button class="theme-toggle" onclick="toggleTheme()">Light</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="intro">
+            <h1>Documentation Hub</h1>
+            <p>A collection of notes, guides, and documentation. New articles are automatically detected and published.</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Total Articles</div>
+                <div class="stat-value" id="total-count">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Last Updated</div>
+                <div class="stat-value" id="last-updated" style="font-size: 1rem;">--</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Articles</h2>
+        <div id="loading" class="loading">Loading articles...</div>
+        <div id="error" style="display: none;"></div>
+        <div class="articles-container" id="articles-container"></div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div id="modal-body" class="markdown-content"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Built with simplicity. Updated via automation.</p>
+    </footer>
+
+    <script src="../src/scripts/app.js"></script>
+</body>
+</html>
