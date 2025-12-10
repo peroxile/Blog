@@ -1,0 +1,14 @@
+{
+    "name": "blog",
+    "version": "1.0.0",
+    "description": "Secure personal blog with automated markdown synchronization",
+    "main": "index.js",
+    "scripts": {
+      "build": "node scripts/build.js",
+      "dev": "npm run build"
+    },
+    "keywords": ["blog", "markdown", "github"],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {}
+  }
