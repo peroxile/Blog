@@ -1,0 +1,9 @@
+[
+  {
+    "title": "Security Best Practices",
+    "filename": "sec.md",
+    "date": "2025-12-13",
+    "excerpt": "Essential security guidelines for modern applications.",
+    "content": "# Security Best Practices\n\nEssential security guidelines for modern applications.\n\n## Authentication\n\nAlways use secure authentication methods.\n\n### Password Storage\n- Use hashing (bcrypt, argon2)\n- Never store plain text\n- Use salt values\n\n### Session Management\n- Use HTTPOnly cookies\n- Implement CSRF protection\n- Set reasonable timeouts\n\n## Data Protection\n\nProtect user data with encryption.\n\n## API Security\n\n- Use HTTPS only\n- Validate all inputs\n- Rate limiting"
+  }
+]
