@@ -18,11 +18,11 @@ jobs:
             node-version: '24'
 
         - name:   Generate articles manifest
-          run: node scripts/build.js'
+          run: node scripts/build.js
 
         - name: Commit generated manifest
           run: | 
             git config user.name "GitHub Actions"
             git config user.email "actions@github.com"
             git add public/data/manifest.json
-            git diff --quiet && diff --staged --quiet || (git commit -m "Generate manifest [skip ci]" && git push origin main)
+            git diff --quiet && git diff --staged --quiet || (git commit -m "Generate manifest [skip ci]" && git push origin main)
