@@ -1,8 +1,15 @@
 [
   {
+    "title": "Hard Nut in shell:  Buiding Automation workflow",
+    "filename": "hardnutsh.md",
+    "date": "2025-12-16",
+    "excerpt": "Building and automating tasks can be considered critical at some point if much....",
+    "content": "# Hard Nut in shell:  Buiding Automation workflow \n\nBuilding and automating tasks can be considered critical at some point if much.... \n\n\n\nThe math behind automating the probability of improving a job:\n\n```bash\n\n\nLet F = number of failed jobs in the period.\nLet T = total jobs in period.\nFailure rate = F/T \n\nExpressed as a percentage\n(F / T) × 100\n\nA displayed value of **25%** implies:\n\nF / T = 0.25\n\n- Example instantiation: if 25 jobs failed out of 100 total, or 5 out of 20, or any pair maintaining the 1:4 ratio.\n\nProbability of “improving” the rate cannot be computed from the metric alone.  \nA probability requires a defined stochastic model: distributions of job outcomes over time, independence assumptions, and historical variance.  \nThe screenshot provides only aggregated counts, which are insufficient to derive any predictive probability.\n\n```"
+  },
+  {
     "title": "Security Best Practices",
     "filename": "sec.md",
-    "date": "2025-12-13",
+    "date": "2025-12-16",
     "excerpt": "Essential security guidelines for modern applications.",
     "content": "# Security Best Practices\n\nEssential security guidelines for modern applications.\n\n## Authentication\n\nAlways use secure authentication methods.\n\n### Password Storage\n- Use hashing (bcrypt, argon2)\n- Never store plain text\n- Use salt values\n\n### Session Management\n- Use HTTPOnly cookies\n- Implement CSRF protection\n- Set reasonable timeouts\n\n## Data Protection\n\nProtect user data with encryption.\n\n## API Security\n\n- Use HTTPS only\n- Validate all inputs\n- Rate limiting"
   }
