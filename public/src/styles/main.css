@@ -248,7 +248,7 @@ main {
 
 .modal-content {
     background-color: var(--bg-secondary);
-    max-width: 800px;
+    max-width: 900px;
     margin: 2rem auto;
     padding: 2rem;
     border-radius: 6px;
@@ -276,7 +276,7 @@ main {
 
 .markdown-content {
     font-size: 0.95rem;
-    line-height: 1.7;
+    line-height: 1.5;
 }
 
 .markdown-content h2 {
@@ -287,7 +287,7 @@ main {
 }
 
 .markdown-content h3 {
-    margin-top: 1rem;
+    margin-top: 0;
     margin-bottom: 0.5rem;
     font-size: 1.1rem;
     font-weight: 600;
@@ -322,7 +322,7 @@ main {
 
 .markdown-content ul,
 .markdown-content ol {
-    margin: 1rem 0 1rem 2rem;
+    margin: 1rem 0 0.5rem 1rem;
 }
 
 .markdown-content li {
@@ -336,19 +336,6 @@ main {
 
 .markdown-content a:hover {
     text-decoration: underline;
-}
-
-/* ============================================================================
-   FOOTER
-   ============================================================================ */
-
-footer {
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    border-top: 1px solid var(--border-color);
-    margin-top: 3rem;
 }
 
 /* ============================================================================
