@@ -32,11 +32,18 @@ function generateManifest() {
 
             const content = fs.readFileSync(filePath, 'utf-8');
 
-            const stats = fs.statSync(filePath);
-            const date = new Date(stats.mtime)
+            //  Get Original Creation date from git
+            let date = getGitCreationDate(filePath);
+            
+            // Fallback: Use file modification time if no git
+
+            if (!date) {
+                const stats = fs.statSync(filePath);
+                date = new Date(stats.mtime)
                 .toISOString()
                 .split('T')[0];
-            
+            }
+
                 const {title, excerpt } = parseMarkdown(content);
 
                 articles.push({
@@ -71,6 +78,27 @@ function generateManifest() {
     console.log(`Location ${manifestPath}\n`);
     
     return articles.length;
+}
+
+function getGitCreationDate(filePath) {
+    try {
+        // Get the file's relative path
+        const relativePath = path.relative(process.cwd(), filePath);
+
+        // Get git log (oldest commit first)
+        const command = `git log --follow --format=%aI --"${relativePath}" | tail -1`;
+        const result = exeSync(command, {encoding: 'utf-8'}).trim();
+
+        if (result) {
+        // Extract just the date (YYYY-MM-DD)
+            return result.split('T')[0];
+        }
+
+        return null;
+    } catch (error) {
+        // If git command fails, return null (use file mtime)
+        return null;
+    }
 }
 
 function parseMarkdown(content) {
@@ -109,7 +137,7 @@ function parseMarkdown(content) {
 
 try {
     const count = generateManifest();
-    console.log(' Build completed successfully!\n');
+    console.log(` Yeah ${count} files to production :) \n Build completed successfully!\n`);
     process.exit(0);
 } catch (error) {
     console.error('\n Build failed:', error.message);
