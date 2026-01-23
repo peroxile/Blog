@@ -1,145 +1,120 @@
-
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
-console.log('\n Starting Blog Build..\n');
+const REPO_ROOT = safeGitRoot();
+const DOCS_DIR = path.join(REPO_ROOT, 'Docs');
+const OUT_DIR = path.join(REPO_ROOT, 'public/data');
+const OUT_FILE = path.join(OUT_DIR, 'manifest.json');
 
-function generateManifest() {
-    const docsDir = path.join(__dirname, '../Docs');
-    const articles = [];
-
-    if (!fs.existsSync(docsDir)) {
-        console.error('Docs folder not found!');
-        process.exit(1);
-    }
-
-    const files = fs.readdirSync(docsDir);
-    console.log(`Found ${files.length} files in Docs/\n`);
-
-    const mdFiles = files.filter(file =>
-        file.endsWith('.md') && 
-        fs.statSync(path.join(docsDir, file)).isFile()
-    );
-
-    console.log(`✓ Found ${mdFiles.length} markdown files \n`);
-        if (mdFiles.length === 0) {
-            console.warn(' No markdown files found in Docs/');
-        }
-
-    mdFiles.forEach(file => {
-        try {
-            const filePath = path.join(docsDir, file);
-
-            const content = fs.readFileSync(filePath, 'utf-8');
-
-            //  Get Original Creation date from git
-            let date = getGitCreationDate(filePath);
-            
-            // Fallback: Use file modification time if no git
-
-            if (!date) {
-                const stats = fs.statSync(filePath);
-                date = new Date(stats.mtime)
-                .toISOString()
-                .split('T')[0];
-            }
-
-                const {title, excerpt } = parseMarkdown(content);
-
-                articles.push({
-                    title: title || file.replace('.md', '').replace(/-/g, ''),
-                    filename: file,
-                    date: date,
-                    excerpt: excerpt,
-                    content: content
-                });
-                
-                console.log(` ✓ ${file} (${date})`);
-                
-        } catch (error) {
-            console.error( `✗ Error processing ${file}:`, error.message);           
-        }
-    });
-
-    articles.sort((a,b) => new Date(b.date) - new Date(a.date));
-
-    const outputDir = path.join(__dirname, '../public/data');
-    if (!fs.existsSync(outputDir)) {
-        fs.mkdirSync(outputDir, { recursive: true});
-    }
-
-    const manifestPath = path.join(outputDir, 'manifest.json');
-    fs.writeFileSync(
-        manifestPath,
-        JSON.stringify(articles, null, 2)
-    );
-
-    console.log(`\n Generated manifest.json with ${articles.length} articles`);
-    console.log(`Location ${manifestPath}\n`);
-    
-    return articles.length;
+function safeGitRoot() {
+  try {
+    return execSync('git rev-parse --show-toplevel', { encoding: 'utf-8' }).trim();
+  } catch {
+    return process.cwd();
+  }
 }
 
-function getGitCreationDate(filePath) {
-    try {
-        // Get the file's relative path
-        const relativePath = path.relative(process.cwd(), filePath);
+function runGit(cmd) {
+  try {
+    return execSync(cmd, { encoding: 'utf-8' }).trim();
+  } catch {
+    return '';
+  }
+}
 
-        // Get git log (oldest commit first)
-        const command = `git log --follow --format=%aI --"${relativePath}" | tail -1`;
-        const result = exeSync(command, {encoding: 'utf-8'}).trim();
+function getGitDates(filePath) {
+  const rel = path.relative(REPO_ROOT, filePath);
 
-        if (result) {
-        // Extract just the date (YYYY-MM-DD)
-            return result.split('T')[0];
-        }
+  const created = runGit(
+    `git log --follow --reverse --format=%aI -- "${rel}"`
+  ).split('\n')[0];
 
-        return null;
-    } catch (error) {
-        // If git command fails, return null (use file mtime)
-        return null;
-    }
+  const updated = runGit(
+    `git log -1 --format=%aI -- "${rel}"`
+  );
+
+  return {
+    created: created ? created.split('T')[0] : null,
+    updated: updated ? updated.split('T')[0] : null
+  };
+}
+
+function extractFrontMatterDate(content) {
+  const m = content.match(/^---[\s\S]*?date:\s*(\d{4}-\d{2}-\d{2})/m);
+  return m ? m[1] : null;
 }
 
 function parseMarkdown(content) {
-    let title = 'Untitled'
-    let excerpt = '';
+  let title = 'Untitled';
+  let excerpt = '';
 
-    const lines = content.split('\n');
+  const lines = content.split('\n');
 
-    // Find first heading (#)
-    for (const line of lines) {
-        if (line.startsWith('#')) {
-            title = line.replace(/^#+\s*/, '').trim();
-            break;
-        }
+  for (const l of lines) {
+    if (l.startsWith('#')) {
+      title = l.replace(/^#+\s*/, '').trim();
+      break;
     }
+  }
 
-    // Find first paragraph
-
-    for (const line of lines) {
-        const trimmed = line.trim();
-        if (trimmed &&
-            !trimmed.startsWith('#') &&
-            !trimmed.startsWith('```') &&
-            !trimmed.startsWith('-') &&
-            !trimmed.startsWith('*')) {
-                excerpt = trimmed.substring(0, 150);
-                if (excerpt.length === 150) {
-                    excerpt += '...';
-                }
-                break;
-            }
+  for (const l of lines) {
+    const t = l.trim();
+    if (t && !/^(#|```|-|\*)/.test(t)) {
+      excerpt = t.slice(0, 150);
+      break;
     }
+  }
 
-    return { title, excerpt };
+  return { title, excerpt };
 }
 
-try {
-    const count = generateManifest();
-    console.log(` Yeah ${count} files to production :) \n Build completed successfully!\n`);
-    process.exit(0);
-} catch (error) {
-    console.error('\n Build failed:', error.message);
-    process.exit(1);    
+function resolveDates(filePath, content) {
+  const gitDates = getGitDates(filePath);
+  const fmDate = extractFrontMatterDate(content);
+
+  if (gitDates.created) {
+    return gitDates;
+  }
+
+  if (fmDate) {
+    return { created: fmDate, updated: fmDate };
+  }
+
+  return { created: 'DRAFT', updated: 'DRAFT' };
 }
+
+function generateManifest() {
+  if (!fs.existsSync(DOCS_DIR)) {
+    throw new Error('Docs directory missing');
+  }
+
+  const files = fs.readdirSync(DOCS_DIR)
+    .filter(f => f.endsWith('.md'))
+    .map(f => path.join(DOCS_DIR, f))
+    .filter(f => fs.statSync(f).isFile());
+
+  const articles = [];
+
+  for (const filePath of files) {
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const { title, excerpt } = parseMarkdown(content);
+    const { created, updated } = resolveDates(filePath, content);
+
+    articles.push({
+      title,
+      filename: path.basename(filePath),
+      created,
+      updated,
+      excerpt,
+      content
+    });
+  }
+
+  articles.sort((a, b) => new Date(b.created) - new Date(a.created));
+
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.writeFileSync(OUT_FILE, JSON.stringify(articles, null, 2));
+}
+
+generateManifest();
