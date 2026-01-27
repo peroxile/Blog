@@ -48,12 +48,8 @@ The `/usr` directory contains substantial content:
 **`/mnt`** Traditionally used as a temporary mount point for filesystems, though `/media` has become more common for removable media.
 
 **References:**
-
-My Brain for Interconnection :)
-
 How Linux Works -- What every SuperUser Should Know - Brain Ward (2ND EDITION)
 
-CHATGPT 
 
 
 
