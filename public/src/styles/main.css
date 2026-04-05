@@ -55,21 +55,56 @@ header {
     letter-spacing: 0.5px;
 }
 
+/* ============================================================================
+   THEME TOGGLE  — icon pill button
+   ============================================================================ */
+
 .theme-toggle {
+    /* reset */
     background: none;
     border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: 999px;
     cursor: pointer;
-    font-size: 0.85rem;
-    transition: all 0.3s;
+    padding: 0.35rem 0.55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.25s, background-color 0.25s, transform 0.15s;
+    /* no text shown — icon only */
+    color: var(--text-primary);
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+}
+
+.theme-toggle svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    display: block;
+    transition: transform 0.4s ease, opacity 0.2s;
 }
 
 .theme-toggle:hover {
     border-color: var(--accent-color);
     color: var(--accent-color);
+    transform: scale(1.08);
 }
+
+.theme-toggle:active {
+    transform: scale(0.95);
+}
+
+/* show / hide the correct icon */
+.icon-sun  { display: none; }
+.icon-moon { display: block; }
+
+body.light-mode .icon-sun  { display: block; }
+body.light-mode .icon-moon { display: none; }
+
+/* ============================================================================
+   HEADER CONTROLS & SOCIAL
+   ============================================================================ */
 
 .header-controls {
     display: flex;
@@ -166,9 +201,57 @@ main {
 
 .section-title {
     font-size: 1.3rem;
-    margin: 2.5rem 0 1.5rem 0;
+    margin: 2.5rem 0 1rem 0;
     font-weight: 600;
     letter-spacing: 0.3px;
+}
+
+/* ============================================================================
+   SEARCH BAR
+   ============================================================================ */
+
+.search-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.search-wrapper svg {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    fill: var(--text-secondary);
+    pointer-events: none;
+}
+
+#search-input {
+    width: 100%;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem 0.65rem 2.4rem;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+}
+
+#search-input::placeholder {
+    color: var(--text-secondary);
+}
+
+#search-input:focus {
+    border-color: var(--accent-color);
+}
+
+.no-results {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 2rem 0;
 }
 
 /* ============================================================================
@@ -216,10 +299,27 @@ main {
     opacity: 0.7;
 }
 
+/* date + reading time on one line */
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
 .article-date {
     font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 1rem;
+}
+
+.article-read-time {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 99px;
+    padding: 0.1rem 0.55rem;
+    white-space: nowrap;
 }
 
 .article-excerpt {
@@ -330,6 +430,38 @@ main {
     color: var(--text-primary);
 }
 
+/* code block wrapper for copy button */
+.code-block-wrapper {
+    position: relative;
+    margin: 1rem 0;
+}
+
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 0.2s, color 0.2s;
+    z-index: 1;
+}
+
+.copy-btn:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+.copy-btn.copied {
+    color: #4caf50;
+    border-color: #4caf50;
+}
+
 .markdown-content code {
     background-color: var(--bg-primary);
     padding: 0.2rem 0.5rem;
@@ -344,7 +476,7 @@ main {
     padding: 1rem;
     border-radius: 4px;
     overflow-x: auto;
-    margin: 1rem 0;
+    margin: 0;        /* margin handled by .code-block-wrapper */
 }
 
 .markdown-content pre code {
@@ -371,6 +503,45 @@ main {
 }
 
 /* ============================================================================
+   BACK TO TOP BUTTON
+   ============================================================================ */
+
+#back-to-top {
+    position: fixed;
+    bottom: 1.75rem;
+    right: 1.75rem;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: #000;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.2s;
+    z-index: 500;
+}
+
+#back-to-top svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+#back-to-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#back-to-top:hover {
+    transform: translateY(-2px);
+}
+
+/* ============================================================================
    RESPONSIVE DESIGN
    ============================================================================ */
 
@@ -389,8 +560,25 @@ main {
 
     header {
         flex-direction: column;
-        gap: 1rem;
-        padding: 1rem;
+        align-items: flex-start;
+        gap: 0.9rem;
+        padding: 1rem 1.1rem;
+    }
+
+    .logo {
+        margin-left: 0.2rem;
+        font-size: 1.1rem;
+    }
+
+    .header-controls {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+    }
+
+    .social {
+        gap: 0.65rem;
     }
 
     .stats {
@@ -402,11 +590,17 @@ main {
         margin: 1rem;
         padding: 1.5rem;
     }
+
+    #back-to-top {
+        bottom: 1.25rem;
+        right: 1.25rem;
+    }
 }
 
 @media (max-width: 480px) {
     .logo {
         font-size: 1rem;
+        margin-left: 0.25rem;
     }
 
     .intro h1 {
@@ -419,5 +613,15 @@ main {
 
     .article-card {
         padding: 1rem;
+    }
+
+    .theme-toggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .social a svg {
+        width: 22px;
+        height: 22px;
     }
 }
