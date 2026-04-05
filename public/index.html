@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paul's Website</title>
+    <!-- SVG favicon -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg">
     <link rel="stylesheet" href="./src/styles/main.css">
 </head>
 <body>
@@ -11,7 +13,18 @@
         <div class="logo">Paul's Website</div>
 
         <div class="header-controls">
-            <button class="theme-toggle" onclick="toggleTheme()">Light</button>
+
+            <!-- Theme toggle — icon only, no text label needed -->
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle theme">
+                <!-- Moon: shown in dark mode -->
+                <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+                </svg>
+                <!-- Sun: shown in light mode -->
+                <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm0-14V2m0 20v-2m8-8h2M2 12H0m13.657-6.343 1.414-1.414M6.929 17.071 5.515 18.485m12.556 0-1.414-1.414M6.929 6.929 5.515 5.515"/>
+                </svg>
+            </button>
 
             <div class="social">
                 <a href="https://mastodon.social/@realpaulpx_" target="_blank" rel="noopener noreferrer" aria-label="Mastodon">
@@ -65,10 +78,32 @@
         </div>
 
         <h2 class="section-title">Articles</h2>
+
+        <!-- Search bar -->
+        <div class="search-wrapper">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
+            </svg>
+            <input
+                type="search"
+                id="search-input"
+                placeholder="Search articles…"
+                autocomplete="off"
+                spellcheck="false"
+            >
+        </div>
+
         <div id="loading" class="loading">Loading articles...</div>
         <div id="error" style="display: none;"></div>
         <div class="articles-container" id="articles-container"></div>
     </main>
+
+    <!-- Back to top -->
+    <button id="back-to-top" aria-label="Back to top" title="Back to top">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
 
     <div id="modal" class="modal">
         <div class="modal-content">
