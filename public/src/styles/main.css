@@ -9,7 +9,6 @@
 }
 
 :root {
-    /* Dark mode colors */
     --bg-primary: #0a0a0a;
     --bg-secondary: #151515;
     --text-primary: #e0e0e0;
@@ -70,6 +69,39 @@ header {
 .theme-toggle:hover {
     border-color: var(--accent-color);
     color: var(--accent-color);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.social {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.social a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    text-decoration: none;
+}
+
+.social a svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    display: block;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.social a:hover {
+    color: var(--accent-color);
+    transform: translateY(-1px);
 }
 
 /* ============================================================================
