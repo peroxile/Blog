@@ -24,6 +24,9 @@ async function loadArticles() {
         renderArticles(articles);
         updateStats(articles);
 
+        // Open article from URL on direct link visit
+        handleHash();
+
     } catch (error) {
         console.error('Error loading articles:', error);
         document.getElementById('loading').style.display = 'none';
@@ -32,7 +35,26 @@ async function loadArticles() {
 }
 
 
-// ─── Rendering ────────────────────────────────────────────────────────────────
+//  Slug 
+
+function slugify(title) {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+}
+
+function handleHash() {
+    const hash = location.hash.slice(1);
+    if (!hash) return;
+    const index = articlesData.findIndex(a => slugify(a.title) === hash);
+    if (index !== -1) openArticle(index);
+}
+
+
+// Rendering
 
 function renderArticles(articles) {
     const container = document.getElementById('articles-container');
@@ -53,13 +75,13 @@ function renderArticles(articles) {
                 <span class="article-read-time">${readingTime(article.content)}</span>
             </div>
             <p class="article-excerpt">${escapeHtml(article.excerpt)}</p>
-            <a href="#" class="article-link">Read more</a>
+            <a href="#${slugify(article.title)}" class="article-link" onclick="event.stopPropagation()">Read more</a>
         </div>
     `).join('');
 }
 
 
-// ─── Search / filter ──────────────────────────────────────────────────────────
+// Search / filter
 
 function handleSearch(query) {
     const q = query.toLowerCase().trim();
@@ -86,7 +108,7 @@ function handleSearch(query) {
 }
 
 
-// ─── Markdown parser ──────────────────────────────────────────────────────────
+// Markdown parser
 
 function parseMarkdown(content) {
     let title = 'Untitled';
@@ -163,7 +185,7 @@ function markdownToHtml(md) {
 }
 
 
-// ─── Modal ────────────────────────────────────────────────────────────────────
+// Modal
 
 function openArticle(index) {
     const article = articlesData[index];
@@ -182,8 +204,10 @@ function openArticle(index) {
         `;
 
         modal.style.display = 'block';
-        // Scroll modal to top on open
         modal.scrollTop = 0;
+
+        // Update URL with article slug
+        history.pushState(null, '', `#${slugify(article.title)}`);
 
     } catch (error) {
         console.error('Error rendering article:', error);
@@ -193,10 +217,12 @@ function openArticle(index) {
 
 function closeModal() {
     document.getElementById('modal').style.display = 'none';
+    // Clear the hash when modal closes
+    history.pushState(null, '', location.pathname);
 }
 
 
-// ─── Copy code ────────────────────────────────────────────────────────────────
+// Copy code
 
 function copyCode(btn) {
     const code = btn.nextElementSibling.querySelector('code').innerText;
@@ -211,7 +237,7 @@ function copyCode(btn) {
 }
 
 
-// ─── Back to top ──────────────────────────────────────────────────────────────
+// Back to top
 
 function initBackToTop() {
     const btn = document.getElementById('back-to-top');
@@ -222,7 +248,7 @@ function initBackToTop() {
 }
 
 
-// ─── Utilities ────────────────────────────────────────────────────────────────
+// Utilities
 
 function readingTime(content) {
     if (!content) return '';
@@ -256,7 +282,7 @@ function showError(message) {
 }
 
 
-// ─── Theme ────────────────────────────────────────────────────────────────────
+// Theme
 
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
@@ -265,23 +291,18 @@ function toggleTheme() {
 }
 
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// Init
 
 window.addEventListener('load', () => {
-    // Restore theme
     const theme = localStorage.getItem('theme') || 'dark';
     if (theme === 'light') document.body.classList.add('light-mode');
 
-    // Search
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', e => handleSearch(e.target.value));
     }
 
-    // Back to top
     initBackToTop();
-
-    // Load articles
     loadArticles();
 });
 
