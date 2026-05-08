@@ -2,7 +2,7 @@ name: Telegram Digest
 
 on:
   schedule:
-    - cron: '0 8 * * *'
+    - cron: '0 22 28 * *'
   workflow_dispatch:   # lets you trigger manually to test
 
 jobs:
