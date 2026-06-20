@@ -19,7 +19,7 @@ jobs:
           node-version: '24'
 
       - name: Generate articles manifest
-        run: node scripts/build.js
+        run: node scripts/build.ts
 
       - name: Commit generated manifest
         run: |
