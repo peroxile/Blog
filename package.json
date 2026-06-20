@@ -1,14 +1,28 @@
 {
-    "name": "blog",
-    "version": "1.0.0",
-    "description": "Secure personal blog with automated markdown synchronization",
-    "main": "index.js",
-    "scripts": {
-      "build": "node scripts/build.js",
-      "dev": "npm run build"
-    },
-    "keywords": ["blog", "markdown", "github"],
-    "author": "",
-    "license": "MIT",
-    "dependencies": {}
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "Secure personal blog with automated markdown synchronization",
+  "main": "index.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "npm run build",
+    "build:manifest": "tsx scripts/build.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "blog",
+    "markdown",
+    "github"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.0.0",
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "build": "^0.1.4",
+    "typecheck": "^0.1.2"
   }
+}
