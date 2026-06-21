@@ -25,5 +25,11 @@
     "build": "^0.1.4",
     "typecheck": "^0.1.2",
     "vite": "^8.0.16"
+  },
+  "pnpm": {
+    "overrides": {
+      "js-yaml": "4.2.0",
+      "uglify-js": "2.6.0"
+    }
   }
 }
