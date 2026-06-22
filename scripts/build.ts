@@ -85,17 +85,17 @@ function parseMarkdown(content: string): { title: string; excerpt: string } {
 }
 
 function generateManifest(): number {
-  const docsDir = path.join(__dirname, "../Docs");
+  const docsDir = path.join(__dirname, "../docs");
   const articles: Article[] = [];
 
-  // Check Docs folder exists
+  // Check docs folder exists
   if (!fs.existsSync(docsDir)) {
-    console.error("Docs folder not found!");
+    console.error("docs folder not found!");
     process.exit(1);
   }
 
   const files = fs.readdirSync(docsDir);
-  console.log(`Found ${files.length} files in Docs/\n`);
+  console.log(`Found ${files.length} files in docs/\n`);
 
   const mdFiles = files.filter(
     (file) =>
@@ -105,7 +105,7 @@ function generateManifest(): number {
   console.log(`✓ Found ${mdFiles.length} markdown files \n`);
 
   if (mdFiles.length === 0) {
-    console.warn("No markdown files found in Docs/");
+    console.warn("No markdown files found in docs/");
   }
 
   mdFiles.forEach((file) => {
