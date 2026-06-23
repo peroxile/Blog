@@ -6,7 +6,8 @@ import { fileURLToPath } from "node:url";
 type Article = {
   title: string;
   filename: string;
-  date: string;
+  date: string; // published
+  modified: string; // last update
   excerpt: string;
   content: string;
 };
@@ -30,7 +31,7 @@ function safeGit(cmd: string): string {
 }
 
 // Get the FIRST commit date for a file from git history
-function getGitCreationDate(filePath: string): string | null {
+function getFirstGitDate(filePath: string): string | null {
   try {
     const relativePath = path.relative(process.cwd(), filePath);
 
@@ -44,6 +45,26 @@ function getGitCreationDate(filePath: string): string | null {
     if (!firstCommit) return null;
 
     return firstCommit.split("T")[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+// Get the LAST commit date for a file from git history.
+function getLastGitDate(filePath: string): string | null {
+  try {
+    const relativePath = path.relative(process.cwd(), filePath);
+
+    const output = safeGit(
+      `git log --follow -1 --format=%aI -- "${relativePath}"`
+    );
+
+    if (!output) return null;
+
+    const lastCommit = output.split("\n")[0];
+    if (!lastCommit) return null;
+
+    return lastCommit.split("T")[0] ?? null;
   } catch {
     return null;
   }
@@ -113,16 +134,23 @@ function generateManifest(): number {
       const filePath = path.join(docsDir, file);
       const content = fs.readFileSync(filePath, "utf-8");
 
-      // Get creation date from git (ALWAYS syncs with git)
-      let date = getGitCreationDate(filePath);
+      // Published date = first commit date.
+      let published = getFirstGitDate(filePath);
 
-      // Fallback: use file modification time if not in git
-      if (!date) {
+      // Modified date = last commit date.
+      let modified = getLastGitDate(filePath);
+
+      // Fallback: use file mtime if git history is unavailable.
+      if (!published || !modified) {
         const stats = fs.statSync(filePath);
-        date = stats.mtime.toISOString().split("T")[0];
-        console.log(`  ✓ ${file} (${date}) [file mtime]`);
+        const fallbackDate = stats.mtime.toISOString().split("T")[0];
+
+        if (!published) published = fallbackDate;
+        if (!modified) modified = fallbackDate;
+
+        console.log(`  ✓ ${file} (${published} / ${modified}) [file mtime]`);
       } else {
-        console.log(`  ✓ ${file} (${date}) [git history]`);
+        console.log(`  ✓ ${file} (${published} / ${modified}) [git history]`);
       }
 
       const { title, excerpt } = parseMarkdown(content);
@@ -130,7 +158,8 @@ function generateManifest(): number {
       articles.push({
         title: title || file.replace(".md", "").replace(/-/g, ""),
         filename: file,
-        date,
+        date: published,
+        modified,
         excerpt,
         content,
       });
@@ -140,7 +169,7 @@ function generateManifest(): number {
     }
   });
 
-  // Sort by date (newest first)
+  // Sort by published date (newest first)
   articles.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
