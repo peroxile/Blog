@@ -11,13 +11,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      typecheck:
-        specifier: ^0.1.2
-        version: 0.1.2
-      vite:
-        specifier: ^8.0.16
-        version: 8.0.16(@types/node@26.0.0)(esbuild@0.28.1)(tsx@4.22.4)
     devDependencies:
       '@types/node':
         specifier: ^26.0.0
@@ -28,6 +21,9 @@ importers:
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@26.0.0)(esbuild@0.28.1)(tsx@4.22.4)
 
 packages:
 
@@ -433,9 +429,6 @@ packages:
     engines: {node: '>=18.0.0'}
     hasBin: true
 
-  typecheck@0.1.2:
-    resolution: {integrity: sha512-noA7T++dtHFemmk++XgotLp47kcu8ezbvN3hUUljZvntPGDWi9Ci0c24x6onS92PxOUNZFYChH8KPXRaoCcjgQ==}
-
   typescript@6.0.3:
     resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
@@ -787,8 +780,6 @@ snapshots:
       esbuild: 0.28.1
     optionalDependencies:
       fsevents: 2.3.3
-
-  typecheck@0.1.2: {}
 
   typescript@6.0.3: {}
 
