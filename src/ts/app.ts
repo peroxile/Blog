@@ -5,6 +5,7 @@ type Theme = "dark" | "light";
 interface Article {
   title: string;
   date: string;
+  modified: string;
   content: string;
   excerpt: string;
 }
@@ -93,14 +94,12 @@ function renderArticles(articles: Article[]): void {
         <div class="article-card" onclick="openArticle(${i})">
             <div class="article-header">
                 <div class="article-title">${escapeHtml(article.title)}</div>
-                <div class="article-icon">→</div>
             </div>
             <div class="article-meta">
                 <span class="article-date">${formatDate(article.date)}</span>
                 <span class="article-read-time">${readingTime(article.content)}</span>
             </div>
             <p class="article-excerpt">${escapeHtml(article.excerpt)}</p>
-            <a href="#${slugify(article.title)}" class="article-link" onclick="event.stopPropagation()">Read more</a>
         </div>
     `
     )
@@ -211,7 +210,7 @@ function openArticle(index: number): void {
     body.innerHTML = `
       <h2>${escapeHtml(article.title)}</h2>
       <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.9rem;">
-        Published on ${formatDate(article.date)} · ${readingTime(article.content)}
+        Published on ${formatDate(article.date)} · Modified ${formatDate(article.modified)} · ${readingTime(article.content)}
       </p>
       ${html}
     `;
