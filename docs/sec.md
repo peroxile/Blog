@@ -1,4 +1,4 @@
-# Mastering Critical Web Application Security Risks
+# Web Application Security Risks
 
 This note uses the **OWASP Top 10:2021** categories. The OWASP Top 10 is an awareness framework, not a complete vulnerability taxonomy. A single vulnerability or incident can involve more than one category.
 
