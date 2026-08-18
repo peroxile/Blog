@@ -501,7 +501,7 @@ Input validation is only one layer. SSRF defense should combine application-leve
 
 ## Important Terminology Rule
 
-Throughout this document, avoid using these terms interchangeably:
+Throughout this article, avoid using these terms interchangeably:
 
 **Authentication** = establishing the identity of a subject.
 
